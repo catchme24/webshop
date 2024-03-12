@@ -1,0 +1,29 @@
+<div mat-dialog-content>
+  <form class="login-form">
+
+    <div class="form-floating">
+      <input type="text" class="form-control" id="fp1" placeholder="Login" [(ngModel)]="addProductForm.name" name="first">
+      <label for="fp1">Название рыбы</label>
+    </div>
+
+    <div class="form-floating">
+      <input type="text" class="form-control" id="fp2" placeholder="Password" [(ngModel)]="addProductForm.price" name="first">
+      <label for="fp2">Цена</label>
+    </div>
+
+    <div class="form-floating">
+      <input type="text" class="form-control" id="fp3" placeholder="Password" [(ngModel)]="addProductForm.description" name="first">
+      <label for="fp3">Описание</label>
+    </div>
+
+    <div class="form-floating">
+      <input type="text" class="form-control" id="fp4" placeholder="Password" [(ngModel)]="addProductForm.imageUrl" name="first">
+      <label for="fp4">Изображение</label>
+    </div>
+
+    <div class="button-container">
+      <button class="login-button" type="submit" (click)="addProduct()">Добавить</button>
+    </div>
+  </form>
+
+</div>

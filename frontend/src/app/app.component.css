@@ -1,0 +1,37 @@
+
+
+a:visited {
+  color: white;
+  text-decoration: none!important;
+}
+
+a{
+  color: white;
+  text-decoration: none!important;
+}
+
+.header-navig li{
+  margin-right: 20px;
+}
+
+.header {
+  height: 80px;
+  color: #d55afd;
+  background-color: #880beb;
+  display: flex;
+  align-items: center;
+}
+
+.container {
+  align-items: center;
+}
+
+.link {
+  padding: 0px 10px;
+  color: white;
+}
+
+.link:hover {
+  color: #d9d4d4;
+  cursor: pointer;
+}

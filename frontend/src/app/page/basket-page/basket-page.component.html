@@ -1,0 +1,189 @@
+<div class="page-container">
+
+  <div class="page-title">
+    МОИ ЗАКАЗЫ
+  </div>
+
+  <div class="page">
+    <div class="orders-container">
+      <div class="current-order">
+        <div class="order-title">
+          Текущий заказ{{currentOrder?.orderId}}
+        </div>
+        <div *ngFor="let productQuantity of currentOrder?.products; let i = index" class="order-item">
+          <div class="product-info">
+            <div class="product-image-container">
+              <div class="product-image">
+                <img mat-card-image [src]="productQuantity.product.imageUrl" alt="Fish Image" width="150" height="150">
+              </div>
+            </div>
+            <div class="product-text-info">
+              <div class="product-name">{{productQuantity.product.productName}}</div>
+              <div class="product-description">{{productQuantity.product.description}}</div>
+            </div>
+          </div>
+          <div class="change-count-and-price-container">
+            <div class="change-count-container">
+              <div class="change-button-container">
+                <button class="change-button" (click)="changeCountOfProduct(currentOrder?.orderId || '', productQuantity.product.productId, productQuantity.quantity + 1)">+</button>
+              </div>
+              <div class="count">{{productQuantity.quantity}}</div>
+              <div class="change-button-container">
+                <button class="change-button" (click)="changeCountOfProduct(currentOrder?.orderId || '', productQuantity.product.productId, productQuantity.quantity - 1)">-</button>
+              </div>
+            </div>
+            <div class="price">
+              {{productQuantity.product.price}}/кг
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngFor="let prevOrder of prevOrders; let i = index" class="completed-order">
+        <div class="order-title">
+          Заказ номер: {{prevOrder.orderId}}
+        </div>
+        <div *ngFor="let productQuantity of prevOrder.products; let i = index" class="order-item">
+          <div class="product-info">
+            <div class="product-image-container">
+              <div class="product-image">
+                <img mat-card-image [src]="productQuantity.product.imageUrl" alt="Fish Image" width="150" height="150">
+              </div>
+            </div>
+            <div class="product-text-info">
+              <div class="product-name">{{productQuantity.product.productName}}</div>
+              <div class="product-description">{{productQuantity.product.description}}</div>
+            </div>
+          </div>
+          <div class="change-count-and-price-container">
+            <div class="change-count-container">
+<!--              <div class="change-button-container">-->
+<!--                <button class="change-button" (click)="changeCountOfProduct(currentOrder?.orderId || '', productQuantity.product.productId, productQuantity.quantity + 1)">+</button>-->
+<!--              </div>-->
+              <div class="count">{{productQuantity.quantity}}</div>
+<!--              <div class="change-button-container">-->
+<!--                <button class="change-button" (click)="changeCountOfProduct(currentOrder?.orderId || '', productQuantity.product.productId, productQuantity.quantity - 1)">-</button>-->
+<!--              </div>-->
+            </div>
+            <div class="price">
+              {{productQuantity.product.price}}/кг
+            </div>
+          </div>
+        </div>
+
+        <div class="order-delivery">
+          <div>{{this.authService.getAddress()}}</div>
+        </div>
+
+        <div class="order-payment">
+          <div>Способ оплаты:</div>
+          <div>{{prevOrder.deliveryListReadDto.paymentMethod}}</div>
+        </div>
+
+        <div class="order-totaly">
+          <div>Дата оформления:</div>
+          <div>{{prevOrder.dateGet}}</div>
+        </div>
+
+        <div class="order-totaly">
+          <div>Дата доставки:</div>
+          <div>{{prevOrder.deliveryListReadDto.dateArrived}}</div>
+        </div>
+      </div>
+
+<!--      <div *ngFor="let prevOrder of prevOrders; let i = index" class="completed-order">-->
+<!--        <div class="order-title">-->
+<!--          Заказ номер: {{prevOrder.orderId}}-->
+<!--        </div>-->
+<!--        <div *ngFor="let productQuantity of prevOrder.products; let i = index" class="order-item">-->
+<!--          <div class="product-description">-->
+<!--            <img mat-card-image [src]="'https://deeper.fish/wp-content/uploads/2021/10/rybalka-na-soma-s-eholotom-0.jpg'" alt="Anime Image" height="70" width="100">-->
+<!--            <div class="product-description-text">{{productQuantity.product.description}}</div>-->
+<!--          </div>-->
+<!--          <div class="change-count-container">-->
+<!--            <div class="count">{{productQuantity.quantity}}</div>-->
+<!--          </div>-->
+<!--          <div class="price">-->
+<!--            {{productQuantity.product.price}}-->
+<!--          </div>-->
+
+<!--        </div>-->
+
+<!--        <div class="order-delivery">-->
+<!--            <div>Доставка:</div>-->
+<!--            <div>{{"в базе не храним, где брать?"}}</div>-->
+<!--        </div>-->
+
+<!--        <div class="order-payment">-->
+<!--            <div>Способ оплаты:</div>-->
+<!--            <div>{{prevOrder.deliveryListReadDto.paymentMethod}}</div>-->
+<!--        </div>-->
+
+<!--        <div class="order-totaly">-->
+<!--          <div>Дата оформления:</div>-->
+<!--          <div>{{prevOrder.dateGet}}</div>-->
+<!--        </div>-->
+
+<!--        <div class="order-totaly">-->
+<!--          <div>Дата доставки:</div>-->
+<!--          <div>{{prevOrder.deliveryListReadDto.dateArrived}}</div>-->
+<!--        </div>-->
+
+<!--      </div>-->
+  </div>
+
+    <div class="totaly-container">
+      <div class="totaly-info">
+        <div class="totaly-info-title">
+          <div>Итого:</div>
+          <div>{{totalCost}}</div>
+        </div>
+        <div class="totaly-info-count">
+          <div>Масса, кг.</div>
+          <div>{{totalMass}}</div>
+        </div>
+
+        <div class="totaly-info-count">
+          <div>Скидка</div>
+          <div>{{"только для привелигированных рыбаков"}}</div>
+        </div>
+      </div>
+
+      <div class="totaly-delivery">
+        <div class="totaly-delivery-title">
+          <div>Доставка:</div>
+          <div class="list">{{this.authService.getAddress()}}</div>
+        </div>
+
+      </div>
+
+      <div class="totaly-payment">
+        <div class="totaly-payment-title">
+          <div class="totaly-payment-method">Способ оплаты:</div>
+<!--          <select class="list">-->
+<!--            <option [ngValue]="payMethod[0]"></option>-->
+<!--            <option [value]="payMethod[1]"></option>-->
+<!--          </select>-->
+<!--          <select class="list">-->
+<!--            <option disabled>Выберите метод оплаты</option>-->
+<!--            <option *ngFor="let payMethod of payMethods" [ngValue]="payMethod">{{payMethod}}</option>-->
+<!--          </select>-->
+
+          <mat-selection-list class="list" (selectionChange)="some($event)">
+            <mat-list-option [selected]="payMethod.isActive" *ngFor="let payMethod of payMethods" >
+              {{payMethod.name}}
+            </mat-list-option>
+          </mat-selection-list>
+  <!--        <div class="list">{{"некоторое число,например, 200000"}}</div>-->
+        </div>
+      </div>
+
+      <div class="sumbit-button-container">
+        <button [className]="totalCost == 0 ? 'submit-button-blocked' : 'submit-button'" class="submit-button" [disabled]="totalCost == 0" type="submit" (click)="formOrder()">Оформить заказ</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+

@@ -1,0 +1,35 @@
+<!--<div mat-dialog-content class="mat-dialog-content">-->
+
+<!--    <div class="form-floating">-->
+<!--        <input type="username" class="form-control" id="floatingInput" placeholder="Username" [(ngModel)]="username">-->
+<!--        <label for="floatingInput">Имя пользователя</label>-->
+<!--      </div>-->
+
+<!--    <div class="form-floating">-->
+<!--        <input type="password" class="form-control" id="floatingPassword" placeholder="Password" [(ngModel)]="password">-->
+<!--        <label for="floatingPassword">Пароль</label>-->
+<!--    </div>-->
+
+<!--    <button class="btn btn-primary w-100 py-2" type="submit" (click)="Login()">Login</button>-->
+
+<!--</div>-->
+
+<div mat-dialog-content>
+  <form class="login-form">
+
+    <div class="form-floating">
+      <input type="text" class="form-control" id="fp1" placeholder="Login" [(ngModel)]="loginForm.username" name="first">
+      <label for="fp1">Имя пользователя</label>
+    </div>
+
+    <div class="form-floating">
+      <input type="password" class="form-control" id="fp2" placeholder="Password" [(ngModel)]="loginForm.password" name="first">
+      <label for="fp2">Пароль</label>
+    </div>
+
+    <div class="button-container">
+      <button class="login-button" type="submit" (click)="login()">Войти</button>
+    </div>
+  </form>
+
+</div>

@@ -1,0 +1,55 @@
+<div mat-dialog-content>
+
+  <form class="login-form">
+
+    <div class="form-floating">
+      <input type="text" class="form-control" id="fp1" placeholder="Login" [(ngModel)]="registrationForm.username" name="first">
+      <label for="fp1">Имя пользователя</label>
+    </div>
+
+    <div class="form-floating">
+      <input type="password" class="form-control" id="fp2" placeholder="Login" [(ngModel)]="registrationForm.password" name="first">
+      <label for="fp2">Пароль</label>
+    </div>
+
+    <div class="form-floating">
+      <input type="text" class="form-control" id="fp3" placeholder="Login" [(ngModel)]="registrationForm.firstName" name="first">
+      <label for="fp3">Имя</label>
+    </div>
+
+    <div class="form-floating">
+      <input type="text" class="form-control" id="fp4" placeholder="Login" [(ngModel)]="registrationForm.lastName" name="first">
+      <label for="fp4">Фамилия</label>
+    </div>
+
+    <div class="form-floating">
+      <input type="text" class="form-control" id="fp5" placeholder="Login" [(ngModel)]="registrationForm.phoneNumber" name="first">
+      <label for="fp5">Номер телефона</label>
+    </div>
+
+    <div class="form-floating">
+      <input type="text" class="form-control" id="fp6" placeholder="Login" [(ngModel)]="registrationForm.city" name="first">
+      <label for="fp6">Город</label>
+    </div>
+
+    <div class="form-floating">
+      <input type="text" class="form-control" id="fp7" placeholder="Login" [(ngModel)]="registrationForm.street" name="first">
+      <label for="fp7">Улица</label>
+    </div>
+
+    <div class="form-floating">
+      <input type="text" class="form-control" id="fp8" placeholder="Login" [(ngModel)]="registrationForm.house" name="first">
+      <label for="fp8">Дом</label>
+    </div>
+
+    <div class="form-floating">
+      <input type="text" class="form-control" id="fp9" placeholder="Password" [(ngModel)]="registrationForm.apartment" name="first">
+      <label for="fp9">Квартира</label>
+    </div>
+
+    <div class="button-container">
+      <button class="login-button" type="submit" (click)="registr()">Зарегистрироваться</button>
+    </div>
+  </form>
+
+</div>
