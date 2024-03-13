@@ -12,6 +12,9 @@ public class ExampleApplication {
 	public static void main(String[] args) {
 		System.out.println("НОВЫЙ КОММИТ");
 		System.out.println("еще строчка");
+
+
+		System.out.println("Еще строчечка");
 		SpringApplication.run(ExampleApplication.class, args);
 	}
 
