@@ -1,6 +1,6 @@
 # Webshop
 
-Web application-a store with a shopping cart and the ability to place orders
+Web application-store with a shopping cart and the ability to place orders
 
 ## Requirements to install
 
