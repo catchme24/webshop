@@ -9,7 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("/orders")
+@RequestMapping("/api/orders")
 @RestController
 @AllArgsConstructor
 public class OrderController {

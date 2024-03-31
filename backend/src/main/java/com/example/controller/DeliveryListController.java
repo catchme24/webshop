@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("/deliveryList")
+@RequestMapping("/api/deliveryList")
 @RestController
 @AllArgsConstructor
 public class DeliveryListController {

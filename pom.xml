@@ -9,14 +9,24 @@
         <version>3.0.2</version>
         <relativePath/>
     </parent>
+
     <groupId>com.example</groupId>
-    <artifactId>study</artifactId>
+    <artifactId>webshop</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Study</name>
+    <name>webshop</name>
     <description>Study project for Spring Boot</description>
     <packaging>pom</packaging>
+
+    <properties>
+        <!--Directory, where static resource files will be placed-->
+        <!--for, e.g, Angular its 'build'-->
+        <frontendBuildDirectory>dist/fish-app-front/browser/</frontendBuildDirectory>
+        <frontendModule>frontend</frontendModule>
+        <backendModule>backend</backendModule>
+    </properties>
+
     <modules>
-        <module>frontend</module>
-        <module>backend</module>
+        <module>${frontendModule}</module>
+        <module>${backendModule}</module>
     </modules>
 </project>

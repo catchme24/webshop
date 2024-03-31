@@ -3,15 +3,17 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd"
          xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>com.example</groupId>
-    <artifactId>study</artifactId>
+    <artifactId>webshop</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <artifactId>study-frontend</artifactId>
+
+  <artifactId>frontend</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>Study Frontend</name>
-  <description>Study project for Angular</description>
+  <name>frontend</name>
+  <description>study project</description>
   <packaging>pom</packaging>
 
   <build>
