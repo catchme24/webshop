@@ -8,6 +8,7 @@ import lombok.ToString;
 
 @Entity
 @Table(name = "order_products")
+@Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -24,11 +25,9 @@ public class OrderProduct {
 
     @ManyToOne
     @JoinColumn(name = "product_id")
-//    @JsonIgnore
     private Product product;
 
     @ManyToOne
-//    @JsonIgnore
     @JoinColumn(name = "order_id")
     private Order order;
 

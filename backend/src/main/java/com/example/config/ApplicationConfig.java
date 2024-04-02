@@ -2,6 +2,8 @@ package com.example.config;
 
 import com.example.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,6 +14,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import static org.modelmapper.config.Configuration.AccessLevel.PRIVATE;
 
 @Configuration
 @RequiredArgsConstructor
@@ -45,6 +49,20 @@ public class ApplicationConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public ModelMapper modelMapper() {
+        ModelMapper mapper = new ModelMapper();
+        mapper.getConfiguration()
+                .setMatchingStrategy(MatchingStrategies.STRICT)
+                .setFieldMatchingEnabled(true)
+                .setSkipNullEnabled(true)
+                .setFieldAccessLevel(PRIVATE);
+//        mapper.getConfiguration().setAmbiguityIgnored(true);
+//        mapper.registerModule(new Jsr310Module());
+//        mapper.registerModule(new Jdk8Module());
+        return mapper;
     }
 
 }

@@ -18,18 +18,18 @@ public class ProductController {
 
     private final ProductService productService;
 
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @PostMapping
-    public ResponseEntity<ProductReadDto> create(@RequestBody ProductCreateEditDto dto) throws Exception{
-        return new ResponseEntity<>(productService.create(dto), HttpStatus.CREATED);
-    }
-
     @GetMapping
     public ResponseEntity<List<ProductReadDto>> getAll(){
         List<ProductReadDto> list = productService.getAll();
         return ResponseEntity
                 .ok()
                 .body(list);
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping
+    public ResponseEntity<ProductReadDto> create(@RequestBody ProductCreateEditDto dto) throws Exception{
+        return new ResponseEntity<>(productService.create(dto), HttpStatus.CREATED);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")

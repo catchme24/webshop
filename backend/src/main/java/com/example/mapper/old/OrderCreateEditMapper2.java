@@ -1,9 +1,8 @@
-package com.example.mapper;
+package com.example.mapper.old;
 
 import com.example.dto.OrderCreateEditDto;
 import com.example.entity.Order;
 import com.example.entity.Product;
-import com.example.repository.OrderProductRepository;
 import com.example.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -14,9 +13,9 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class OrderCreateEditMapper implements Mapper<OrderCreateEditDto, Order>{
+public class OrderCreateEditMapper2 implements Mapper2<OrderCreateEditDto, Order> {
 
-    private final OrderProductRepository orderProductRepository;
+//    private final OrderProductRepository orderProductRepository;
     private final ProductRepository productRepository;
 
     @Override

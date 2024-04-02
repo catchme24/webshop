@@ -1,9 +1,8 @@
 package com.example.mapper;
 
-public interface Mapper <F, T> {
-    T map(F object);
+public interface Mapper<E, D> {
 
-    default T map(F fromObject, T toObject) {
-        return toObject;
-    }
+    E toEntity(D dto);
+
+    D toDto(E entity);
 }

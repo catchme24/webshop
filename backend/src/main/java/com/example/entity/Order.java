@@ -2,18 +2,19 @@ package com.example.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "orders")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 public class Order {
 
     @Id
@@ -33,6 +34,8 @@ public class Order {
     private DeliveryList deliveryList;
 
     @OneToMany(mappedBy = "order")
-    private List<OrderProduct> orderProducts = new ArrayList<>();
+//    @MapKey(name = "product_id")
+    @MapKeyColumn(name = "product_id")
+    private Map<Integer, OrderProduct> ordersProducts = new HashMap<>();
 }
 

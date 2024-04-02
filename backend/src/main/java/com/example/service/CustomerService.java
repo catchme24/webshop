@@ -5,9 +5,9 @@ import com.example.dto.CustomerReadDto;
 import com.example.dto.OrderReadDto;
 import com.example.entity.Customer;
 import com.example.entity.Order;
-import com.example.mapper.CustomerCreateEditMapper;
-import com.example.mapper.CustomerReadMapper;
-import com.example.mapper.OrderReadMapper;
+import com.example.mapper.old.CustomerCreateEditMapper2;
+import com.example.mapper.old.CustomerReadMapper2;
+import com.example.mapper.old.OrderReadMapper2;
 import com.example.repository.CustomerRepository;
 import com.example.repository.OrderRepository;
 import lombok.AllArgsConstructor;
@@ -24,9 +24,9 @@ public class CustomerService {
 
     private final CustomerRepository customerRepository;
     private final OrderRepository orderRepository;
-    private final CustomerReadMapper customerReadMapper;
-    private final OrderReadMapper orderReadMapper;
-    private final CustomerCreateEditMapper customerCreateEditMapper;
+    private final CustomerReadMapper2 customerReadMapper;
+    private final OrderReadMapper2 orderReadMapper;
+    private final CustomerCreateEditMapper2 customerCreateEditMapper;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional

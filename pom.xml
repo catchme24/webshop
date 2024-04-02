@@ -19,7 +19,7 @@
 
     <properties>
         <!--Directory, where static resource files will be placed-->
-        <!--for, e.g, Angular its 'build'-->
+        <!--for, e.g, Angular its 'dist'-->
         <frontendBuildDirectory>dist/fish-app-front/browser/</frontendBuildDirectory>
         <frontendModule>frontend</frontendModule>
         <backendModule>backend</backendModule>

@@ -3,8 +3,8 @@ package com.example.service;
 import com.example.dto.DeliveryListCreateEditDto;
 import com.example.dto.DeliveryListReadDto;
 import com.example.entity.DeliveryList;
-import com.example.mapper.DeliveryListCreateEditMapper;
-import com.example.mapper.DeliveryListReadMapper;
+import com.example.mapper.old.DeliveryListCreateEditMapper2;
+import com.example.mapper.old.DeliveryListReadMapper2;
 import com.example.repository.DeliveryListRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,8 +14,8 @@ import org.springframework.stereotype.Service;
 public class DeliveryListService {
 
     private final DeliveryListRepository deliveryListRepository;
-    private final DeliveryListReadMapper deliveryListReadMapper;
-    private final DeliveryListCreateEditMapper deliveryListCreateEditMapper;
+    private final DeliveryListReadMapper2 deliveryListReadMapper;
+    private final DeliveryListCreateEditMapper2 deliveryListCreateEditMapper;
 
     public DeliveryListReadDto create(DeliveryListCreateEditDto dto){
         return deliveryListReadMapper.map(deliveryListRepository.save(deliveryListCreateEditMapper.map(dto)));

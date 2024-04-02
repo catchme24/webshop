@@ -3,8 +3,8 @@ package com.example.service;
 import com.example.dto.ProductCreateEditDto;
 import com.example.dto.ProductReadDto;
 import com.example.entity.Product;
-import com.example.mapper.ProductCreateEditMapper;
-import com.example.mapper.ProductReadMapper;
+import com.example.mapper.old.ProductCreateEditMapper2;
+import com.example.mapper.old.ProductReadMapper2;
 import com.example.repository.ProductRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 public class ProductService {
 
     private final ProductRepository productRepository;
-    private final ProductReadMapper productReadMapper;
-    private final ProductCreateEditMapper productCreateEditMapper;
+    private final ProductReadMapper2 productReadMapper;
+    private final ProductCreateEditMapper2 productCreateEditMapper;
 
     public ProductReadDto create(ProductCreateEditDto dto)throws Exception{
         Product product = productCreateEditMapper.map(dto);

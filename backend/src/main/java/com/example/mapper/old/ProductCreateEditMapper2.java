@@ -1,13 +1,14 @@
-package com.example.mapper;
+package com.example.mapper.old;
 
 import com.example.dto.ProductCreateEditDto;
 import com.example.entity.Product;
+import com.example.mapper.old.Mapper2;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class ProductCreateEditMapper implements Mapper<ProductCreateEditDto, Product>{
+public class ProductCreateEditMapper2 implements Mapper2<ProductCreateEditDto, Product> {
 
     @Override
     public Product map(ProductCreateEditDto fromObject, Product toObject) {

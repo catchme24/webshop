@@ -1,4 +1,4 @@
-package com.example.mapper;
+package com.example.mapper.old;
 
 import com.example.dto.CustomerCreateEditDto;
 import com.example.entity.Customer;
@@ -12,7 +12,7 @@ import java.util.*;
 
 @Component
 @RequiredArgsConstructor
-public class CustomerCreateEditMapper implements Mapper<CustomerCreateEditDto, Customer>{
+public class CustomerCreateEditMapper2 implements Mapper2<CustomerCreateEditDto, Customer> {
 
     private final OrderRepository orderRepository;
     @Override

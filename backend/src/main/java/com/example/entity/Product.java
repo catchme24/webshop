@@ -2,6 +2,7 @@ package com.example.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,6 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 public class Product {
 
     @Id
@@ -33,7 +35,7 @@ public class Product {
     @Column(name = "image_url")
     private String imageUrl;
 
-    @OneToMany(mappedBy = "product")
-    private List<OrderProduct> orderProducts;
+//    @OneToMany(mappedBy = "product")
+//    private List<OrderProduct> orderProducts;
 }
 

@@ -1,4 +1,4 @@
-package com.example.mapper;
+package com.example.mapper.old;
 
 import com.example.dto.CustomerReadDto;
 import com.example.dto.OrderReadDto;
@@ -11,9 +11,9 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class CustomerReadMapper implements Mapper<Customer, CustomerReadDto>{
+public class CustomerReadMapper2 implements Mapper2<Customer, CustomerReadDto> {
 
-    private final OrderReadMapper orderReadMapper;
+    private final OrderReadMapper2 orderReadMapper;
 
     @Override
     public CustomerReadDto map(Customer object) {

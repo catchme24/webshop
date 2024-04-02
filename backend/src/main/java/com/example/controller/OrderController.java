@@ -1,9 +1,8 @@
 package com.example.controller;
 
-import com.example.dto.DeliveryListCreateEditDto;
-import com.example.dto.OrderReadDto;
-import com.example.dto.ProductQuantityCreateEditDto;
-import com.example.service.DeliveryListService;
+import com.example.dto.ProductQuantityDto;
+import com.example.dto.order.DeliveryListDto;
+import com.example.dto.order.OrderDto;
 import com.example.service.OrderService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,25 +14,30 @@ import org.springframework.web.bind.annotation.*;
 public class OrderController {
 
     private final OrderService orderService;
-    private final DeliveryListService deliveryListService;
 
-    @PostMapping("/{id}")
-    public ResponseEntity<OrderReadDto> addProductInOrder(@PathVariable("id") Integer orderId,
-                                                          @RequestBody ProductQuantityCreateEditDto dto) throws Exception {
-
-        OrderReadDto orderReadDto = orderService.addProductInOrder(orderId, dto);
-
+    @GetMapping("/{id}")
+    public ResponseEntity<OrderDto> getById(@PathVariable("id") Integer orderId) {
+        OrderDto orderDto = orderService.getById(orderId);
         return ResponseEntity
                 .ok()
-                .body(orderReadDto);
+                .body(orderDto);
+    }
+
+    @PostMapping("/{id}")
+    public ResponseEntity<OrderDto> addProductInOrder(@PathVariable("id") Integer orderId,
+                                                      @RequestBody ProductQuantityDto dto) throws Exception {
+
+        OrderDto orderDto = orderService.addProductInOrder(orderId, dto);
+        return ResponseEntity
+                .ok()
+                .body(orderDto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<OrderReadDto> changeCountOfProduct(@PathVariable("id") Integer orderId,
-                                                             @RequestBody ProductQuantityCreateEditDto dto){
+    public ResponseEntity<OrderDto> changeCountOfProduct(@PathVariable("id") Integer orderId,
+                                                         @RequestBody ProductQuantityDto dto){
 
-        OrderReadDto orderReadDto = orderService.changeCountOfProduct(orderId, dto);
-
+        OrderDto orderReadDto = orderService.changeCountOfProduct(orderId, dto);
         return ResponseEntity
                 .ok()
                 .body(orderReadDto);
@@ -49,40 +53,13 @@ public class OrderController {
     }
 
     @PostMapping("/{id}/form-order")
-    public ResponseEntity<OrderReadDto> addDeliveryList(@RequestBody DeliveryListCreateEditDto dto,
-                                                             @PathVariable("id") Integer orderId){
+    public ResponseEntity<OrderDto> addDeliveryList(@RequestBody DeliveryListDto dto,
+                                                    @PathVariable("id") Integer orderId){
 
-        OrderReadDto orderReadDto = orderService.addDeliveryList(orderId, dto);
-
+        OrderDto orderDto = orderService.addDeliveryList(orderId, dto);
         return ResponseEntity
                 .ok()
-                .body(orderReadDto);
+                .body(orderDto);
     }
-
-//    @GetMapping ("/{id}/customer")
-//    public ResponseEntity<List<OrderReadDto>> getAllOrders(@PathVariable("id") Integer customerId){
-//
-//
-//        List<OrderReadDto> list = customerService.getAllOrders(customerId);
-//        return ResponseEntity
-//                .ok()
-//                .body(list);
-//    }
-
-//    @PostMapping
-//    public ResponseEntity<OrderReadDto> create(@RequestBody OrderCreateEditDto dto){
-//        return new ResponseEntity<>(orderService.create(dto), HttpStatus.CREATED);
-//    }
-//
-//    @GetMapping("/{id}")
-//    public ResponseEntity<OrderReadDto> read(@RequestBody Integer id){
-//        return new ResponseEntity<>(orderService.read(id), HttpStatus.OK);
-//    }
-//
-//    @PutMapping("/{id}")
-//    public ResponseEntity<OrderReadDto> update(@RequestBody OrderCreateEditDto dto, Integer id){
-//        return new ResponseEntity<>(orderService.update(dto, id), HttpStatus.ACCEPTED);
-//    }
-//
 
 }

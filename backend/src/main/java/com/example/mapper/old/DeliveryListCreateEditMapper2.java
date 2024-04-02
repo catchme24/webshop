@@ -1,4 +1,4 @@
-package com.example.mapper;
+package com.example.mapper.old;
 
 import com.example.dto.DeliveryListCreateEditDto;
 import com.example.entity.DeliveryList;
@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class DeliveryListCreateEditMapper implements Mapper<DeliveryListCreateEditDto, DeliveryList>{
+public class DeliveryListCreateEditMapper2 implements Mapper2<DeliveryListCreateEditDto, DeliveryList> {
 
     private final OrderRepository orderRepository;
 
