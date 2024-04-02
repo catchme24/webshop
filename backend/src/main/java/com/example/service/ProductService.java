@@ -1,51 +1,75 @@
 package com.example.service;
 
-import com.example.dto.ProductCreateEditDto;
-import com.example.dto.ProductReadDto;
-import com.example.entity.Product;
-import com.example.mapper.old.ProductCreateEditMapper2;
-import com.example.mapper.old.ProductReadMapper2;
+import com.example.dto.order.ProductDto;
+import com.example.mapper.ProductMapper;
 import com.example.repository.ProductRepository;
+import com.example.service.response.ServiceResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-public class ProductService {
+@Transactional(readOnly = true)
+public class ProductService implements ApiService<ProductDto> {
 
     private final ProductRepository productRepository;
-    private final ProductReadMapper2 productReadMapper;
-    private final ProductCreateEditMapper2 productCreateEditMapper;
+    private final ProductMapper productMapper;
 
-    public ProductReadDto create(ProductCreateEditDto dto)throws Exception{
-        Product product = productCreateEditMapper.map(dto);
-        if (product.getProductName().equals("") || (product.getPrice().doubleValue() <= 0.0) || product.getDescription().
-                equals("") || product.getImageUrl().equals("")) throw new Exception("");
-        return productReadMapper.map(productRepository.save(product));
-    }
 
-    public ProductReadDto read(Integer id){
-        return productReadMapper.map(productRepository.findById(id).get());
-    }
-
-    public ProductReadDto update(ProductCreateEditDto dto, Integer id){
-        Product product = productRepository.findById(id).get();
-        return productReadMapper.map(productCreateEditMapper.map(dto, product));
-    }
-
-    public void delete(Integer id){
-        productRepository.delete(productRepository.findById(id).get());
-    }
-
-    public List<ProductReadDto> getAll() {
-        return productRepository.findAll()
-                .stream()
-                .map(entity ->
-                    productReadMapper.map(entity)
-                )
+    @Override
+    public ServiceResponse<ProductDto> readAll(UserDetails principal) {
+        List<ProductDto> products = productRepository.findAll().stream()
+                .map(productMapper::toDto)
                 .collect(Collectors.toList());
+        return goodResponse(null, products);
+    }
+
+    public ServiceResponse<ProductDto> readAll(Collection<Long> ids, UserDetails principal) {
+        List<ProductDto> products = productRepository.findAllById(ids
+                        .stream()
+                        .mapToInt(x -> x.intValue())
+                        .boxed()
+                        .collect(Collectors.toList()))
+                .stream()
+                .map(productMapper::toDto)
+                .collect(Collectors.toList());
+        return goodResponse(null, products);
+    }
+
+    @Override
+    public ServiceResponse<ProductDto> read(Long id, UserDetails principal) {
+        return goodResponse(null,
+                                productRepository.findById(id.intValue())
+                                        .map(productMapper::toDto)
+                                        .orElse(null)
+        );
+    }
+
+    @Override
+    @Transactional
+    public ServiceResponse<ProductDto> create(ProductDto dto, UserDetails principal) {
+        ProductDto product = productMapper.toDto(productRepository.save(productMapper.toEntity(dto)));
+        return goodResponse(null, product);
+    }
+
+    @Override
+    @Transactional
+    public ServiceResponse<ProductDto> update(ProductDto dto, UserDetails principal) {
+        ProductDto product = productMapper.toDto(productRepository.save(productMapper.toEntity(dto)));
+        return goodResponse(null, product);
+    }
+
+    @Override
+    @Transactional
+    public ServiceResponse<ProductDto> delete(Long id, UserDetails principal) {
+        productRepository.deleteById(id.intValue());
+        return goodResponse(null, new ArrayList<>());
     }
 }

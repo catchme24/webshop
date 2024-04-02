@@ -1,12 +1,20 @@
 package com.example.controller;
 
-import com.example.dto.DeliveryListCreateEditDto;
-import com.example.dto.DeliveryListReadDto;
+import com.example.controller.util.ControllerUtils;
+import com.example.dto.order.DeliveryListDto;
 import com.example.service.DeliveryListService;
+import com.example.service.response.ServiceResponse;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Collection;
 
 @RequestMapping("/api/deliveryList")
 @RestController
@@ -15,24 +23,22 @@ public class DeliveryListController {
 
     private final DeliveryListService deliveryListService;
 
-    @PostMapping
-    public ResponseEntity<DeliveryListReadDto> create(@RequestBody DeliveryListCreateEditDto dto){
-        return new ResponseEntity<>(deliveryListService.create(dto), HttpStatus.CREATED);
-    }
-
+    @PreAuthorize("hasAuthority('USER')")
     @GetMapping("/{id}")
-    public ResponseEntity<DeliveryListReadDto> read(@PathVariable Integer id){
-        return new ResponseEntity<>(deliveryListService.read(id), HttpStatus.OK);
+    public ResponseEntity<?> read(@PathVariable("id") Long id,
+                                  @AuthenticationPrincipal UserDetails userDetails) {
+
+        ServiceResponse<DeliveryListDto> sr = deliveryListService.read(id, userDetails);
+        return ControllerUtils.mapServiceResponseToHttpResponse(sr);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<DeliveryListReadDto> update(@RequestBody DeliveryListCreateEditDto dto,@PathVariable Integer id){
-        return new ResponseEntity<>(deliveryListService.update(dto, id), HttpStatus.ACCEPTED);
+    @PreAuthorize("hasAuthority('USER')")
+    @GetMapping
+    public ResponseEntity<?> readAll(Collection<Long> ids,
+                                     @AuthenticationPrincipal UserDetails userDetails) {
+
+        ServiceResponse<DeliveryListDto> sr = deliveryListService.readAll(ids, userDetails);
+        return ControllerUtils.mapServiceResponseToHttpResponse(sr);
     }
 
-    @DeleteMapping("/{id}")
-    public HttpStatus delete(@PathVariable Integer id){
-        deliveryListService.delete(id);
-        return HttpStatus.I_AM_A_TEAPOT;
-    }
 }

@@ -55,9 +55,7 @@ public class Customer implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(
-//            cascade = CascadeType.ALL,
-            mappedBy = "customer")
+    @OneToMany(mappedBy = "customer")
     private List<Order> orders = new ArrayList<>();
 
     @Override

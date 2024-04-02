@@ -1,36 +1,42 @@
 package com.example.service;
 
-import com.example.dto.DeliveryListCreateEditDto;
-import com.example.dto.DeliveryListReadDto;
-import com.example.entity.DeliveryList;
-import com.example.mapper.old.DeliveryListCreateEditMapper2;
-import com.example.mapper.old.DeliveryListReadMapper2;
+import com.example.dto.order.DeliveryListDto;
+import com.example.dto.order.ProductDto;
+import com.example.mapper.DeliveryListMapper;
 import com.example.repository.DeliveryListRepository;
+import com.example.service.response.ServiceResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-public class DeliveryListService {
+@Transactional(readOnly = true)
+public class DeliveryListService implements ResponseProducer {
 
     private final DeliveryListRepository deliveryListRepository;
-    private final DeliveryListReadMapper2 deliveryListReadMapper;
-    private final DeliveryListCreateEditMapper2 deliveryListCreateEditMapper;
+    private final DeliveryListMapper deliveryListMapper;
 
-    public DeliveryListReadDto create(DeliveryListCreateEditDto dto){
-        return deliveryListReadMapper.map(deliveryListRepository.save(deliveryListCreateEditMapper.map(dto)));
+    public ServiceResponse<DeliveryListDto> read(Long deliveryListId, UserDetails userDetails){
+        DeliveryListDto deliveryListDto = deliveryListMapper.toDto(deliveryListRepository.findById(deliveryListId.intValue()).get());
+        return goodResponse(null, deliveryListDto);
     }
 
-    public DeliveryListReadDto read(Integer id){
-        return deliveryListReadMapper.map(deliveryListRepository.findById(id).get());
-    }
+    public ServiceResponse<DeliveryListDto> readAll(Collection<Long> ids, UserDetails userDetails) {
 
-    public DeliveryListReadDto update(DeliveryListCreateEditDto dto, Integer id){
-        DeliveryList deliveryList = deliveryListRepository.findById(id).get();
-        return deliveryListReadMapper.map(deliveryListCreateEditMapper.map(dto, deliveryList));
-    }
-
-    public void delete(Integer id){
-        deliveryListRepository.delete(deliveryListRepository.findById(id).get());
+        List<DeliveryListDto> deliveryLists = deliveryListRepository.findAllById(ids
+                        .stream()
+                        .mapToInt(x -> x.intValue())
+                        .boxed()
+                        .collect(Collectors.toList()))
+                .stream()
+                .map(deliveryListMapper::toDto)
+                .collect(Collectors.toList());
+        return goodResponse(null, deliveryLists);
     }
 }
