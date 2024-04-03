@@ -12,6 +12,7 @@ import com.example.repository.ProductRepository;
 import com.example.service.response.ServiceMessage;
 import com.example.service.response.ServiceResponse;
 import lombok.AllArgsConstructor;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -86,8 +87,17 @@ public class OrderService implements ResponseProducer {
         deliveryList.setPaymentMethod(paymentMethod);
         deliveryList.setOrder(first);
         first.setDeliveryList(deliveryList);
+        first.setDateGet(LocalDate.now().plusDays(3L));
 
-        OrderDto order = orderMapper.toDto(orderRepository.save(first));
+        Order emptyOrder = new Order();
+        emptyOrder.setCustomer(customer.get());
+        orderRepository.save(emptyOrder);
+
+        Order save = orderRepository.save(first);
+
+        System.out.println(save.getDeliveryList());
+
+        OrderDto order = orderMapper.toDto(save);
         return goodResponse(HttpStatus.OK, order);
     }
 }

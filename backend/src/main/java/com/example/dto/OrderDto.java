@@ -19,5 +19,5 @@ public class OrderDto extends AbstractDto {
 
     private Long deliveryListId;
 
-    private List<Long> productsId;
+    private List<ProductQuantityDto> productQuantityDtos;
 }

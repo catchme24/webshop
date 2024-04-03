@@ -30,7 +30,7 @@ public class Order {
     private Customer customer;
 
 
-    @OneToOne(mappedBy = "order")
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
     private DeliveryList deliveryList;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)

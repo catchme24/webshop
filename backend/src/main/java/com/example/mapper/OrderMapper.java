@@ -1,6 +1,7 @@
 package com.example.mapper;
 
 import com.example.dto.OrderDto;
+import com.example.dto.ProductQuantityDto;
 import com.example.entity.Order;
 import com.example.repository.OrderRepository;
 import jakarta.annotation.PostConstruct;
@@ -30,7 +31,7 @@ public class OrderMapper extends AbstractMapper<Order, OrderDto> {
         mapper.createTypeMap(Order.class, OrderDto.class)
                 .addMappings(m -> {
                     m.skip(OrderDto::setCustomerId);
-                    m.skip(OrderDto::setProductsId);
+                    m.skip(OrderDto::setProductQuantityDtos);
                     m.skip(OrderDto::setDeliveryListId);
                 }).setPostConverter(toDtoConverter());
 
@@ -46,7 +47,7 @@ public class OrderMapper extends AbstractMapper<Order, OrderDto> {
     public void mapSpecificFields(Order source, OrderDto destination) {
         destination.setCustomerId(getCustomerId(source));
         destination.setDeliveryListId(getDeliveryListId(source));
-        destination.setProductsId(getProductIds(source));
+        destination.setProductQuantityDtos(getProductIds(source));
     }
 
     @Override
@@ -63,10 +64,12 @@ public class OrderMapper extends AbstractMapper<Order, OrderDto> {
         return Objects.isNull(source) || Objects.isNull(source.getDeliveryList()) ? null : source.getDeliveryList().getDeliveryId().longValue();
     }
 
-    private List<Long> getProductIds(Order source) {
+    private List<ProductQuantityDto> getProductIds(Order source) {
         return Objects.isNull(source) || source.getOrdersProducts().isEmpty() ? null :
                 source.getOrdersProducts().values().stream()
-                        .map(orderProduct -> orderProduct.getProduct().getProductId().longValue())
+                        .map(orderProduct ->
+                                new ProductQuantityDto(orderProduct.getProduct().getProductId().intValue(),
+                                                                orderProduct.getQuantity()))
                         .collect(Collectors.toList());
     }
 
