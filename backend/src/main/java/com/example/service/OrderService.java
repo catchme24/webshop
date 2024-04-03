@@ -1,8 +1,9 @@
 package com.example.service;
 
-import com.example.dto.ProductQuantityDto;
 import com.example.dto.CustomerDto;
 import com.example.dto.OrderDto;
+import com.example.dto.ProductDto;
+import com.example.dto.ProductQuantityDto;
 import com.example.entity.*;
 import com.example.mapper.OrderMapper;
 import com.example.repository.CustomerRepository;
@@ -12,7 +13,7 @@ import com.example.repository.ProductRepository;
 import com.example.service.response.ServiceMessage;
 import com.example.service.response.ServiceResponse;
 import lombok.AllArgsConstructor;
-import org.aspectj.weaver.ast.Or;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -20,12 +21,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 @Transactional(readOnly = true)
 public class OrderService implements ResponseProducer {
 
@@ -39,30 +40,44 @@ public class OrderService implements ResponseProducer {
 
     public ServiceResponse<OrderDto> readAll(UserDetails userDetails) {
         CustomerDto user = (CustomerDto) userDetails;
+        log.debug("Start finding all orders of user with id={}", user.getCustomerId());
         Optional<Customer> customer = customerRepository.findById(user.getCustomerId());
         List<OrderDto> orders = customer.get().getOrders().stream()
                 .map(orderMapper::toDto)
                 .collect(Collectors.toList());
+        log.debug("End finding all orders of user with id={}", user.getCustomerId());
         return goodResponse(HttpStatus.OK, orders);
     }
 
     @Transactional
     public ServiceResponse<OrderDto> addProductInOrder(Integer orderId, ProductQuantityDto dto, UserDetails userDetails) {
-        Optional<Order> order = orderRepository.findById(orderId);
-        OrderProduct existingOrderProduct = order.get().getOrdersProducts().get(dto.getProductId());
+        CustomerDto user = (CustomerDto) userDetails;
+        log.debug("Start adding product with id={} to order with id={}", dto.getProductId(), orderId);
+        Optional<Product> existingProduct = productRepository.findById(dto.getProductId());
+        if (existingProduct.isEmpty()) {
+            log.warn("Сannot add product with id={}, message: {}", dto.getProductId(), ServiceMessage.SHOULD_HAS_EXISTING_ID.name());
+            return errorResponse(HttpStatus.BAD_REQUEST, ServiceMessage.SHOULD_HAS_EXISTING_ID.name());
+        }
+        Optional<Order> existingOrder = orderRepository.findById(orderId);
+        if (existingOrder.isEmpty()) {
+            log.warn("Сannot find order with id={}", orderId);
+            return errorResponse(HttpStatus.BAD_REQUEST, ServiceMessage.SHOULD_HAS_EXISTING_ID.name());
+        }
+        OrderProduct existingOrderProduct = existingOrder.get().getOrdersProducts().get(dto.getProductId());
         if (existingOrderProduct != null) {
+            log.warn("Сannot add product with id={}", dto.getProductId());
             return errorResponse(HttpStatus.BAD_REQUEST, ServiceMessage.ADDED_PRODUCT_ALREADY_IN_ORDER.name());
         }
-        Optional<Product> product = productRepository.findById(dto.getProductId());
+        Order order = existingOrder.get();
+        Product product = existingProduct.get();
 
         OrderProduct orderProduct = new OrderProduct();
-        orderProduct.setOrder(order.get());
-        orderProduct.setProduct(product.get());
+        orderProduct.setOrder(order);
+        orderProduct.setProduct(product);
         orderProduct.setQuantity(dto.getQuantity());
-
-        order.get().getOrdersProducts().put(product.get().getProductId(), orderProduct);
-
-        OrderDto saved = orderMapper.toDto(orderRepository.save(order.get()));
+        order.getOrdersProducts().put(product.getProductId(), orderProduct);
+        OrderDto saved = orderMapper.toDto(orderRepository.save(order));
+        log.debug("End adding product with id={} to order with id={}", dto.getProductId(), orderId);
         return goodResponse(HttpStatus.ACCEPTED, saved);
     }
 
