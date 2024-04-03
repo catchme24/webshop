@@ -10,8 +10,7 @@ public class ControllerUtils {
     public static <D> ResponseEntity<?> mapServiceResponseToHttpResponse(ServiceResponse<D> serviceResponse) {
         Object requestBody = serviceResponse.getErrorMessage().equals("") ? serviceResponse.getContent() : serviceResponse.getErrorMessage();
         return ResponseEntity
-//                .status(serviceResponse.getHttpStatus())
-                .status(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED)
+                .status(serviceResponse.getHttpStatus())
                 .body(requestBody);
     }
 

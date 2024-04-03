@@ -1,19 +1,15 @@
 package com.example.controller;
 
 import com.example.controller.util.ControllerUtils;
-import com.example.dto.order.ProductDto;
+import com.example.dto.ProductDto;
 import com.example.service.ProductService;
 import com.example.service.response.ServiceResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 
 @RequestMapping("/api/products")
@@ -23,11 +19,6 @@ public class ProductController {
 
     private final ProductService productService;
 
-//    @GetMapping
-//    public ResponseEntity<?> readAll() {
-//        ServiceResponse<ProductDto> sr = productService.readAll(null);
-//        return ControllerUtils.mapServiceResponseToHttpResponse(sr);
-//    }
 
     @GetMapping
     public ResponseEntity<?> readAll(@RequestBody(required = false) Collection<Long> ids) {

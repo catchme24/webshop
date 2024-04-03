@@ -1,17 +1,14 @@
 package com.example.config;
 
-import com.example.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -21,29 +18,16 @@ import static org.modelmapper.config.Configuration.AccessLevel.PRIVATE;
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
-    private final CustomerRepository customerRepository;
-
     @Bean
-    public UserDetailsService userDetailsService() {
-        return username ->{
-            System.out.println("app_conf");
-            return customerRepository.findByUsername(username)
-                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        };
-    }
+    public AuthenticationManager authenticationManager(HttpSecurity httpSecurity,
+                                                       UserDetailsService userDetailsService) throws Exception {
 
-
-    @Bean
-    public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService());
-        authProvider.setPasswordEncoder(passwordEncoder());
-        return authProvider;
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
+        return httpSecurity
+                .getSharedObject(AuthenticationManagerBuilder.class)
+                .userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder())
+                .and()
+                .build();
     }
 
     @Bean

@@ -1,6 +1,6 @@
 package com.example.mapper;
 
-import com.example.dto.order.AbstractDto;
+import com.example.dto.AbstractDto;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

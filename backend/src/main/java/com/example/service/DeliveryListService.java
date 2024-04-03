@@ -1,11 +1,11 @@
 package com.example.service;
 
-import com.example.dto.order.DeliveryListDto;
-import com.example.dto.order.ProductDto;
+import com.example.dto.DeliveryListDto;
 import com.example.mapper.DeliveryListMapper;
 import com.example.repository.DeliveryListRepository;
 import com.example.service.response.ServiceResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +24,7 @@ public class DeliveryListService implements ResponseProducer {
 
     public ServiceResponse<DeliveryListDto> read(Long deliveryListId, UserDetails userDetails){
         DeliveryListDto deliveryListDto = deliveryListMapper.toDto(deliveryListRepository.findById(deliveryListId.intValue()).get());
-        return goodResponse(null, deliveryListDto);
+        return goodResponse(HttpStatus.OK, deliveryListDto);
     }
 
     public ServiceResponse<DeliveryListDto> readAll(Collection<Long> ids, UserDetails userDetails) {
@@ -37,6 +37,6 @@ public class DeliveryListService implements ResponseProducer {
                 .stream()
                 .map(deliveryListMapper::toDto)
                 .collect(Collectors.toList());
-        return goodResponse(null, deliveryLists);
+        return goodResponse(HttpStatus.OK, deliveryLists);
     }
 }

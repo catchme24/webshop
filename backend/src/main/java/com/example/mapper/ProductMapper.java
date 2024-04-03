@@ -1,6 +1,6 @@
 package com.example.mapper;
 
-import com.example.dto.order.ProductDto;
+import com.example.dto.ProductDto;
 import com.example.entity.Product;
 import com.example.repository.ProductRepository;
 import jakarta.annotation.PostConstruct;

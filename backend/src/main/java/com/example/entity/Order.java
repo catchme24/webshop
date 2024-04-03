@@ -33,8 +33,7 @@ public class Order {
     @OneToOne(mappedBy = "order")
     private DeliveryList deliveryList;
 
-    @OneToMany(mappedBy = "order")
-//    @MapKey(name = "product_id")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     @MapKeyColumn(name = "product_id")
     private Map<Integer, OrderProduct> ordersProducts = new HashMap<>();
 }

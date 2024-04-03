@@ -2,9 +2,8 @@ package com.example.controller;
 
 
 import com.example.controller.util.ControllerUtils;
-import com.example.dto.order.CustomerDto;
+import com.example.dto.CustomerDto;
 import com.example.service.AuthService;
-import com.example.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

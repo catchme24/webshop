@@ -1,6 +1,7 @@
 package com.example.config;
 
 import com.example.security.JwtAuthenticationFilter;
+import com.example.security.StaticResourceFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,48 +25,22 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig {
 
-    private final JwtAuthenticationFilter jwtAuthFilter;
-    private final AuthenticationProvider authenticationProvider;
-    private static final String[] WHITE_LIST_URL = {
-            "/products",
-            "/auth/**",
-            "/**",
-//            "/orders/**",
-//            "/customer/**",
-//            "/products/**",
-//            "/deliveryList/**"
-    };
-
-    private static final String[] BLACK_LIST_URL = {
-//            "/products",
-//            "/auth/**",
-//            "/**",
-            "/orders/**",
-            "/customer/**",
-            "/deliveryList/**"
-    };
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final StaticResourceFilter staticResourceFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req ->
-//                        req.requestMatchers(WHITE_LIST_URL)
-//                                .permitAll()
-//                                .anyRequest()
-//                                .authenticated()
-
-                        req.requestMatchers(BLACK_LIST_URL)
-                                .authenticated()
-                                .anyRequest()
+                        req.requestMatchers("/**")
                                 .permitAll()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
-                .authenticationProvider(authenticationProvider)
                 .addFilterBefore(corsFilter(), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(staticResourceFilter, JwtAuthenticationFilter.class)
         ;
 
         return http.build();

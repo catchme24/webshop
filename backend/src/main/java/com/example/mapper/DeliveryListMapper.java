@@ -1,6 +1,6 @@
 package com.example.mapper;
 
-import com.example.dto.order.DeliveryListDto;
+import com.example.dto.DeliveryListDto;
 import com.example.entity.DeliveryList;
 import com.example.repository.DeliveryListRepository;
 import jakarta.annotation.PostConstruct;

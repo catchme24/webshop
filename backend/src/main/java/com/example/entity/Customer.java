@@ -17,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class Customer implements UserDetails {
+public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,33 +55,8 @@ public class Customer implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "customer")
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.PERSIST)
     private List<Order> orders = new ArrayList<>();
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
-    }
-
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
 }
 

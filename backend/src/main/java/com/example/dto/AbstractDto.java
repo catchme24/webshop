@@ -1,4 +1,4 @@
-package com.example.dto.order;
+package com.example.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;

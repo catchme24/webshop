@@ -2,7 +2,7 @@ package com.example.controller;
 
 import com.example.controller.util.ControllerUtils;
 import com.example.dto.ProductQuantityDto;
-import com.example.dto.order.OrderDto;
+import com.example.dto.OrderDto;
 import com.example.service.OrderService;
 import com.example.service.response.ServiceResponse;
 import lombok.AllArgsConstructor;
@@ -21,11 +21,9 @@ public class OrderController {
 
 
     @PreAuthorize("hasAuthority('USER')")
-    @GetMapping("/{id}")
-    public ResponseEntity<?> readAll(@PathVariable("id") Integer orderId,
-                                    @AuthenticationPrincipal UserDetails userDetails) {
-
-        ServiceResponse<OrderDto> sr = orderService.readAll(orderId, userDetails);
+    @GetMapping
+    public ResponseEntity<?> readAll(@AuthenticationPrincipal UserDetails userDetails) {
+        ServiceResponse<OrderDto> sr = orderService.readAll(userDetails);
         return ControllerUtils.mapServiceResponseToHttpResponse(sr);
     }
 
@@ -52,10 +50,9 @@ public class OrderController {
     @PreAuthorize("hasAuthority('USER')")
     @PostMapping("/form-current-order")
     public ResponseEntity<?> formCurrentOrder(@RequestBody String paymentMethod,
-                                             @PathVariable("id") Integer orderId,
-                                             @AuthenticationPrincipal UserDetails userDetails){
+                                              @AuthenticationPrincipal UserDetails userDetails){
 
-        ServiceResponse<OrderDto> sr = orderService.formCurrentOrder(orderId, paymentMethod, userDetails);
+        ServiceResponse<OrderDto> sr = orderService.formCurrentOrder(paymentMethod, userDetails);
         return ControllerUtils.mapServiceResponseToHttpResponse(sr);
     }
 

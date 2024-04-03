@@ -1,10 +1,11 @@
 package com.example.service;
 
-import com.example.dto.order.ProductDto;
+import com.example.dto.ProductDto;
 import com.example.mapper.ProductMapper;
 import com.example.repository.ProductRepository;
 import com.example.service.response.ServiceResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +29,7 @@ public class ProductService implements ApiService<ProductDto> {
         List<ProductDto> products = productRepository.findAll().stream()
                 .map(productMapper::toDto)
                 .collect(Collectors.toList());
-        return goodResponse(null, products);
+        return goodResponse(HttpStatus.OK, products);
     }
 
     public ServiceResponse<ProductDto> readAll(Collection<Long> ids, UserDetails principal) {
@@ -40,12 +41,12 @@ public class ProductService implements ApiService<ProductDto> {
                 .stream()
                 .map(productMapper::toDto)
                 .collect(Collectors.toList());
-        return goodResponse(null, products);
+        return goodResponse(HttpStatus.OK, products);
     }
 
     @Override
     public ServiceResponse<ProductDto> read(Long id, UserDetails principal) {
-        return goodResponse(null,
+        return goodResponse(HttpStatus.OK,
                                 productRepository.findById(id.intValue())
                                         .map(productMapper::toDto)
                                         .orElse(null)
@@ -56,20 +57,20 @@ public class ProductService implements ApiService<ProductDto> {
     @Transactional
     public ServiceResponse<ProductDto> create(ProductDto dto, UserDetails principal) {
         ProductDto product = productMapper.toDto(productRepository.save(productMapper.toEntity(dto)));
-        return goodResponse(null, product);
+        return goodResponse(HttpStatus.CREATED, product);
     }
 
     @Override
     @Transactional
     public ServiceResponse<ProductDto> update(ProductDto dto, UserDetails principal) {
         ProductDto product = productMapper.toDto(productRepository.save(productMapper.toEntity(dto)));
-        return goodResponse(null, product);
+        return goodResponse(HttpStatus.ACCEPTED, product);
     }
 
     @Override
     @Transactional
     public ServiceResponse<ProductDto> delete(Long id, UserDetails principal) {
         productRepository.deleteById(id.intValue());
-        return goodResponse(null, new ArrayList<>());
+        return goodResponse(HttpStatus.OK, new ArrayList<>());
     }
 }
