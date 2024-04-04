@@ -21,7 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -63,10 +65,19 @@ public class OrderService implements ResponseProducer {
             log.warn("Сannot find order with id={}", orderId);
             return errorResponse(HttpStatus.BAD_REQUEST, ServiceMessage.SHOULD_HAS_EXISTING_ID.name());
         }
+        if (!existingOrder.get().getCustomer().getCustomerId().equals(user.getCustomerId())) {
+            log.warn("Сannot add product in order with id={} and owner id={}, message: {}",
+                                orderId,
+                                existingOrder.get().getCustomer().getCustomerId(),
+                                ServiceMessage.ORDER_OWNER_ID_NOT_EQUALS_TO_AUTHORIZED_USER_ID.name());
+            return errorResponse(HttpStatus.BAD_REQUEST,
+                                ServiceMessage.ORDER_OWNER_ID_NOT_EQUALS_TO_AUTHORIZED_USER_ID.name());
+        }
         OrderProduct existingOrderProduct = existingOrder.get().getOrdersProducts().get(dto.getProductId());
         if (existingOrderProduct != null) {
             log.warn("Сannot add product with id={}", dto.getProductId());
-            return errorResponse(HttpStatus.BAD_REQUEST, ServiceMessage.ADDED_PRODUCT_ALREADY_IN_ORDER.name());
+            return errorResponse(HttpStatus.BAD_REQUEST,
+                                ServiceMessage.ADDED_PRODUCT_ALREADY_IN_ORDER.name());
         }
         Order order = existingOrder.get();
         Product product = existingProduct.get();

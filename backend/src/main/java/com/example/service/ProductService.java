@@ -59,7 +59,7 @@ public class ProductService implements ApiService<ProductDto> {
         log.debug("Start finding product with id={}", id);
         Optional<Product> findedProduct  = productRepository.findById(id.intValue());
         if (findedProduct.isEmpty()) {
-            log.warn("Сannot find product with id={}", id);
+            log.warn("Сannot find product with id={}, message: {}", id, ServiceMessage.SHOULD_HAS_EXISTING_ID.name());
             return errorResponse(HttpStatus.NOT_FOUND, ServiceMessage.SHOULD_HAS_EXISTING_ID.name());
         }
         ProductDto productDto = productMapper.toDto(findedProduct.get());
@@ -72,7 +72,7 @@ public class ProductService implements ApiService<ProductDto> {
     public ServiceResponse<ProductDto> create(ProductDto productToBeAdded, UserDetails principal) {
         log.debug("Start adding new product = {}", productToBeAdded);
         if (productToBeAdded.getProductId() != null) {
-            log.warn("Сannot add new product: {}, new product should not has id", productToBeAdded);
+            log.warn("Сannot add new product: {}, message: {}", productToBeAdded, ServiceMessage.SHOULD_NOT_HAS_ID.name());
             return errorResponse(HttpStatus.BAD_REQUEST, ServiceMessage.SHOULD_NOT_HAS_ID.name());
         }
         ProductDto addedProduct = productMapper.toDto(productRepository.save(productMapper.toEntity(productToBeAdded)));
@@ -86,16 +86,19 @@ public class ProductService implements ApiService<ProductDto> {
         log.debug("Start updating product with id={}", productToBeUpdated.getProductId());
         ProductDto updatedProduct;
         if (productToBeUpdated.getProductId() == null) {
-            log.warn("Сannot update server with id: {}, updated server should has existing id", productToBeUpdated.getProductId());
-            return errorResponse(HttpStatus.BAD_REQUEST, ServiceMessage.SHOULD_HAS_EXISTING_ID.name());
+            log.warn("Сannot update product with out id, message {}", ServiceMessage.SHOULD_HAS_EXISTING_ID.name());
+            return errorResponse(HttpStatus.BAD_REQUEST,
+                            ServiceMessage.SHOULD_HAS_EXISTING_ID.name());
         }
         Optional<Product> existingProduct = productRepository.findById(productToBeUpdated.getProductId());
         if (existingProduct.isEmpty()) {
-            log.warn("Сannot update server with id: {}, updated server should has existing id", productToBeUpdated.getProductId());
+            log.warn("Сannot update product with id: {}, message {}",
+                                    productToBeUpdated.getProductId(),
+                                    ServiceMessage.SHOULD_HAS_EXISTING_ID.name());
             return errorResponse(HttpStatus.NOT_FOUND, ServiceMessage.SHOULD_HAS_EXISTING_ID.name());
         }
         updatedProduct = productMapper.toDto(productRepository.save(existingProduct.get()));
-        log.debug("End updating server with id={}", productToBeUpdated.getProductId());
+        log.debug("End updating product with id={}", productToBeUpdated.getProductId());
         return goodResponse(HttpStatus.ACCEPTED, updatedProduct);
     }
 
@@ -104,12 +107,12 @@ public class ProductService implements ApiService<ProductDto> {
     public ServiceResponse<ProductDto> delete(Long id, UserDetails principal) {
         log.debug("Start deleting product with id={}", id);
         if (id == null) {
-            log.warn("Сannot delete product with id: {}, deleted product should has existing id", id);
+            log.warn("Сannot delete product with id: {}, message: {}", id, ServiceMessage.SHOULD_HAS_EXISTING_ID.name());
             return errorResponse(HttpStatus.BAD_REQUEST, ServiceMessage.SHOULD_HAS_EXISTING_ID.name());
         }
         Optional<Product> existingProduct = productRepository.findById(id.intValue());
         if (existingProduct.isEmpty()) {
-            log.warn("Сannot delete product with id: {}, deleted product should has existing id", id);
+            log.warn("Сannot delete product with id: {}, message: {}", id, ServiceMessage.SHOULD_HAS_EXISTING_ID.name());
             return errorResponse(HttpStatus.NOT_FOUND, ServiceMessage.SHOULD_HAS_EXISTING_ID.name());
         }
         productRepository.deleteById(id.intValue());
