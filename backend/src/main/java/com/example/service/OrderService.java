@@ -2,7 +2,6 @@ package com.example.service;
 
 import com.example.dto.CustomerDto;
 import com.example.dto.OrderDto;
-import com.example.dto.ProductDto;
 import com.example.dto.ProductQuantityDto;
 import com.example.entity.*;
 import com.example.mapper.OrderMapper;
@@ -21,9 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -94,36 +91,65 @@ public class OrderService implements ResponseProducer {
 
     @Transactional
     public ServiceResponse<OrderDto> changeCountOfProduct(Integer orderId, ProductQuantityDto dto, UserDetails userDetails) {
-        Optional<Order> order = orderRepository.findById(orderId);
-        order.get().getOrdersProducts().get(dto.getProductId()).setQuantity(dto.getQuantity());
-        OrderDto saved = orderMapper.toDto(orderRepository.save(order.get()));
+        CustomerDto user = (CustomerDto) userDetails;
+        log.debug("Start changing count of product with id={} in order with id={}", dto.getProductId(), orderId);
+        Optional<Product> existingProduct = productRepository.findById(dto.getProductId());
+        if (existingProduct.isEmpty()) {
+            log.warn("Сannot change count of product with id={}, message: {}", dto.getProductId(), ServiceMessage.SHOULD_HAS_EXISTING_ID.name());
+            return errorResponse(HttpStatus.BAD_REQUEST, ServiceMessage.SHOULD_HAS_EXISTING_ID.name());
+        }
+        Optional<Order> existingOrder = orderRepository.findById(orderId);
+        if (existingOrder.isEmpty()) {
+            log.warn("Сannot find order with id={}", orderId);
+            return errorResponse(HttpStatus.BAD_REQUEST, ServiceMessage.SHOULD_HAS_EXISTING_ID.name());
+        }
+        if (!existingOrder.get().getCustomer().getCustomerId().equals(user.getCustomerId())) {
+            log.warn("Сannot change count of product in order with id={} and owner id={}, message: {}",
+                    orderId,
+                    existingOrder.get().getCustomer().getCustomerId(),
+                    ServiceMessage.ORDER_OWNER_ID_NOT_EQUALS_TO_AUTHORIZED_USER_ID.name());
+            return errorResponse(HttpStatus.BAD_REQUEST,
+                    ServiceMessage.ORDER_OWNER_ID_NOT_EQUALS_TO_AUTHORIZED_USER_ID.name());
+        }
+        OrderProduct existingOrderProduct = existingOrder.get().getOrdersProducts().get(dto.getProductId());
+        if (existingOrderProduct == null) {
+            log.warn("Сannot change count of product with id={}", dto.getProductId());
+            return errorResponse(HttpStatus.BAD_REQUEST,
+                    ServiceMessage.PRODUCT_IS_NOT_IN_ORDER.name());
+        }
+        existingOrderProduct.setQuantity(dto.getQuantity());
+        OrderDto saved = orderMapper.toDto(orderRepository.save(existingOrder.get()));
+        log.debug("End changing count of product with id={} to order with id={}", dto.getProductId(), orderId);
         return goodResponse(HttpStatus.ACCEPTED, saved);
     }
 
     @Transactional
     public ServiceResponse<OrderDto> formCurrentOrder(String paymentMethod, UserDetails userDetails) {
         CustomerDto user = (CustomerDto) userDetails;
+        log.debug("Start form current order for user with id={}", user.getCustomerId());
         Optional<Customer> customer = customerRepository.findById(user.getCustomerId());
-        Order first = customer.get().getOrders().stream()
+        Order currentOrder = customer.get().getOrders().stream()
                 .filter(order -> order.getDeliveryList() == null)
                 .findFirst().get();
+
+        if (currentOrder.getOrdersProducts().isEmpty()) {
+            log.warn("Сannot form order with id={}", currentOrder.getOrderId());
+            return errorResponse(HttpStatus.BAD_REQUEST,ServiceMessage.ORDER_SHOULD_NOT_BE_EMPTY.name());
+        }
 
         DeliveryList deliveryList = new DeliveryList();
         deliveryList.setDateArrived(LocalDate.now());
         deliveryList.setPaymentMethod(paymentMethod);
-        deliveryList.setOrder(first);
-        first.setDeliveryList(deliveryList);
-        first.setDateGet(LocalDate.now().plusDays(3L));
+        deliveryList.setOrder(currentOrder);
+        currentOrder.setDeliveryList(deliveryList);
+        currentOrder.setDateGet(LocalDate.now().plusDays(3L));
+        OrderDto order = orderMapper.toDto(orderRepository.save(currentOrder));
 
+        //Create new empty order
         Order emptyOrder = new Order();
         emptyOrder.setCustomer(customer.get());
         orderRepository.save(emptyOrder);
-
-        Order save = orderRepository.save(first);
-
-        System.out.println(save.getDeliveryList());
-
-        OrderDto order = orderMapper.toDto(save);
+        log.debug("End form current order for user with id={}", user.getCustomerId());
         return goodResponse(HttpStatus.OK, order);
     }
 }

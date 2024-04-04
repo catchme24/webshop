@@ -1,10 +1,12 @@
 package com.example.mapper;
 
+import com.example.dto.DeliveryListDto;
 import com.example.dto.OrderDto;
 import com.example.dto.ProductQuantityDto;
 import com.example.entity.Order;
 import com.example.repository.OrderRepository;
 import jakarta.annotation.PostConstruct;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,12 +20,14 @@ public class OrderMapper extends AbstractMapper<Order, OrderDto> {
 
     private final ModelMapper mapper;
     private final OrderRepository orderRepository;
+    private final DeliveryListMapper deliveryListMapper;
 
     @Autowired
-    public OrderMapper(ModelMapper mapper, OrderRepository orderRepository) {
+    public OrderMapper(ModelMapper mapper, OrderRepository orderRepository, DeliveryListMapper deliveryListMapper) {
         super(Order.class, OrderDto.class);
         this.mapper = mapper;
         this.orderRepository = orderRepository;
+        this.deliveryListMapper = deliveryListMapper;
     }
 
     @PostConstruct
@@ -31,8 +35,8 @@ public class OrderMapper extends AbstractMapper<Order, OrderDto> {
         mapper.createTypeMap(Order.class, OrderDto.class)
                 .addMappings(m -> {
                     m.skip(OrderDto::setCustomerId);
-                    m.skip(OrderDto::setProductQuantityDtos);
-                    m.skip(OrderDto::setDeliveryListId);
+                    m.skip(OrderDto::setProductsWithQuantity);
+                    m.skip(OrderDto::setDeliveryList);
                 }).setPostConverter(toDtoConverter());
 
         mapper.createTypeMap(OrderDto.class, Order.class)
@@ -46,8 +50,8 @@ public class OrderMapper extends AbstractMapper<Order, OrderDto> {
     @Override
     public void mapSpecificFields(Order source, OrderDto destination) {
         destination.setCustomerId(getCustomerId(source));
-        destination.setDeliveryListId(getDeliveryListId(source));
-        destination.setProductQuantityDtos(getProductIds(source));
+        destination.setDeliveryList(getDeliveryList(source));
+        destination.setProductsWithQuantity(getProductIds(source));
     }
 
     @Override
@@ -57,11 +61,15 @@ public class OrderMapper extends AbstractMapper<Order, OrderDto> {
 
 
     private Long getCustomerId(Order source) {
-        return Objects.isNull(source) || Objects.isNull(source.getCustomer()) ? null : source.getCustomer().getCustomerId().longValue();
+        return Objects.isNull(source) || Objects.isNull(source.getCustomer()) ?
+                null :
+                source.getCustomer().getCustomerId().longValue();
     }
 
-    private Long getDeliveryListId(Order source) {
-        return Objects.isNull(source) || Objects.isNull(source.getDeliveryList()) ? null : source.getDeliveryList().getDeliveryId().longValue();
+    private DeliveryListDto getDeliveryList(Order source) {
+        return Objects.isNull(source) || Objects.isNull(source.getDeliveryList()) ?
+                null :
+                deliveryListMapper.toDto(source.getDeliveryList());
     }
 
     private List<ProductQuantityDto> getProductIds(Order source) {

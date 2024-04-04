@@ -9,6 +9,8 @@ import {Subscription} from "rxjs";
 import {DeliveryList} from "../../model/class/DeliveryList";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {MatSelectionListChange} from "@angular/material/list";
+import {Product} from "../../model/class/Product";
+import {ProductService} from "../../service/product/product.service";
 
 @Component({
   selector: 'app-basket-page',
@@ -38,10 +40,13 @@ export class BasketPageComponent implements OnInit {
 
   currentOrder!: Order | undefined;
   prevOrders!: Order[];
+  productsId: number[] = [];
+  products!: Map<number, Product>;
 
   constructor(
       private customerService: CustomerService,
       private orderService: OrderService,
+      private productService: ProductService,
       public authService: AuthService,
       private formBuilder: FormBuilder
   ) {}
@@ -79,22 +84,53 @@ export class BasketPageComponent implements OnInit {
     console.log("Компонент " + this.constructor.name + ' обновился: ' + this.counter + ' раз!');
 
     const userId = this.authService.getUserId();
-    this.customerService.getOrdersByUserId(userId).subscribe((response: HttpResponse<Order[]>) => {
-      console.log(response.body);
+    this.orderService.getOrdersOfCurrentUser().subscribe((response: HttpResponse<Order[]>) => {
+      console.log("ОТВЕТ" + JSON.stringify(response.body));
       const orders = response.body;
       if (orders != null) {
-        this.currentOrder = orders.find((order: Order) => order.deliveryListReadDto == null);
+        //Current
+        this.currentOrder = orders.find((order: Order) => order.deliveryList == null);
         this.authService.setCurrentOrderId(this.currentOrder?.orderId || '');
-        console.log(this.currentOrder?.orderId);
-          // @ts-ignore
-        this.totalCost = this.currentOrder?.products
-              .reduce((prev, current) =>
-                  prev + current.quantity * current.product.price, 0);
-        // @ts-ignore
-          this.totalMass = this.currentOrder?.products
-            .reduce((prev, current) =>
-                prev + current.quantity, 0);
-        this.prevOrders = orders.filter(order => order.deliveryListReadDto != null);
+        console.log("CURRENT ORDER " + JSON.stringify(this.currentOrder));
+        const currentOrderProductsId: number[] = [];
+        this.currentOrder?.productsWithQuantity.forEach((value, index) => {
+          currentOrderProductsId.push(value.productId);
+        });
+        //Prev
+        this.prevOrders = orders.filter(order => order.deliveryList != null);
+        console.log("PREV ORDERS " + JSON.stringify(this.prevOrders));
+        const prevOrdersProductsId: number[] = [];
+        this.prevOrders.map((value, index) => {
+          value.productsWithQuantity.map(value1 => {
+            prevOrdersProductsId.push(value1.productId);
+          })
+        })
+
+        console.log(this.productsId);
+
+        //Запрос для продуктов на текующий заказ
+        this.productService.getAllByIds(currentOrderProductsId).subscribe((response: HttpResponse<Product[]>) => {
+          console.log("ОТВЕТ НА ПРОДУКТЫ CURRENT " + JSON.stringify(response.body));
+          const products = response.body;
+          products?.forEach((value, index) => {
+            this.currentOrder?.products.push(value);
+          });
+
+        },(error: any) => {
+          console.log(error);
+        });
+
+        //Запрос для продуктов на предыдущие заказ
+        this.productService.getAllByIds(prevOrdersProductsId).subscribe((response: HttpResponse<Product[]>) => {
+          console.log("ОТВЕТ НА ПРОДУКТЫ PREV " + JSON.stringify(response.body));
+          const products = response.body;
+          products?.forEach((value, index) => {
+            this.prevOrders?.push(value);
+          });
+
+        },(error: any) => {
+          console.log(error);
+        });
       }
     },(error: any) => {
       console.log(error);

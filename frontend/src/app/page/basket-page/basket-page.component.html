@@ -10,30 +10,31 @@
         <div class="order-title">
           Текущий заказ{{currentOrder?.orderId}}
         </div>
-        <div *ngFor="let productQuantity of currentOrder?.products; let i = index" class="order-item">
+        <div *ngFor="let productWithQuantity of currentOrder?.productsWithQuantity; let i = index" class="order-item">
+          <div></div>
           <div class="product-info">
             <div class="product-image-container">
               <div class="product-image">
-                <img mat-card-image [src]="productQuantity.product.imageUrl" alt="Fish Image" width="150" height="150">
+                <img mat-card-image [src]="products?.get(productWithQuantity.productId)?.imageUrl" alt="Fish Image" width="150" height="150">
               </div>
             </div>
             <div class="product-text-info">
-              <div class="product-name">{{productQuantity.product.productName}}</div>
-              <div class="product-description">{{productQuantity.product.description}}</div>
+              <div class="product-name">{{products?.get(productWithQuantity.productId)?.productName}}</div>
+              <div class="product-description">{{products?.get(productWithQuantity.productId)?.description}}</div>
             </div>
           </div>
           <div class="change-count-and-price-container">
             <div class="change-count-container">
               <div class="change-button-container">
-                <button class="change-button" (click)="changeCountOfProduct(currentOrder?.orderId || '', productQuantity.product.productId, productQuantity.quantity + 1)">+</button>
+                <button class="change-button" (click)="changeCountOfProduct(currentOrder?.orderId || '', '', productQuantity.quantity + 1)">+</button>
               </div>
-              <div class="count">{{productQuantity.quantity}}</div>
+              <div class="count">{{productWithQuantity.quantity}}</div>
               <div class="change-button-container">
-                <button class="change-button" (click)="changeCountOfProduct(currentOrder?.orderId || '', productQuantity.product.productId, productQuantity.quantity - 1)">-</button>
+                <button class="change-button" (click)="changeCountOfProduct(currentOrder?.orderId || '', '', productQuantity.quantity - 1)">-</button>
               </div>
             </div>
             <div class="price">
-              {{productQuantity.product.price}}/кг
+              {{products?.get(productWithQuantity.productId)?.price}}/кг
             </div>
           </div>
         </div>
@@ -43,16 +44,16 @@
         <div class="order-title">
           Заказ номер: {{prevOrder.orderId}}
         </div>
-        <div *ngFor="let productQuantity of prevOrder.products; let i = index" class="order-item">
+        <div *ngFor="let productQuantity of prevOrder.productsWithQuantity; let i = index" class="order-item">
           <div class="product-info">
             <div class="product-image-container">
               <div class="product-image">
-                <img mat-card-image [src]="productQuantity.product.imageUrl" alt="Fish Image" width="150" height="150">
+                <img mat-card-image [src]="productQuantity.productId" alt="Fish Image" width="150" height="150">
               </div>
             </div>
             <div class="product-text-info">
-              <div class="product-name">{{productQuantity.product.productName}}</div>
-              <div class="product-description">{{productQuantity.product.description}}</div>
+              <div class="product-name">{{productQuantity.productId}}</div>
+              <div class="product-description">{{productQuantity.productId}}</div>
             </div>
           </div>
           <div class="change-count-and-price-container">
@@ -66,7 +67,7 @@
 <!--              </div>-->
             </div>
             <div class="price">
-              {{productQuantity.product.price}}/кг
+              {{productQuantity.productId}}/кг
             </div>
           </div>
         </div>
@@ -77,7 +78,7 @@
 
         <div class="order-payment">
           <div>Способ оплаты:</div>
-          <div>{{prevOrder.deliveryListReadDto.paymentMethod}}</div>
+          <div>{{prevOrder.deliveryList.paymentMethod}}</div>
         </div>
 
         <div class="order-totaly">
@@ -87,7 +88,7 @@
 
         <div class="order-totaly">
           <div>Дата доставки:</div>
-          <div>{{prevOrder.deliveryListReadDto.dateArrived}}</div>
+          <div>{{prevOrder.deliveryList.dateArrived}}</div>
         </div>
       </div>
 

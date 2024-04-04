@@ -29,13 +29,4 @@ public class DeliveryListController {
         return ControllerUtils.mapServiceResponseToHttpResponse(sr);
     }
 
-    @PreAuthorize("hasAuthority('USER')")
-    @GetMapping
-    public ResponseEntity<?> readAll(@RequestBody Collection<Long> ids,
-                                     @AuthenticationPrincipal UserDetails userDetails) {
-
-        ServiceResponse<DeliveryListDto> sr = deliveryListService.readAll(ids, userDetails);
-        return ControllerUtils.mapServiceResponseToHttpResponse(sr);
-    }
-
 }

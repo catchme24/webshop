@@ -1,18 +1,20 @@
 import {Product} from "./Product";
 import {DeliveryList} from "./DeliveryList";
-import {ProductQuantityRead} from "./ProductQuantityRead";
+import {ProductQuantity} from "./ProductQuantity";
 
 export class Order {
     orderId: string;
-    products: ProductQuantityRead[];
+    productsWithQuantity: ProductQuantity[];
+    products: Product[];
     dateGet: string;
-    deliveryListReadDto: DeliveryList;
+    deliveryList: DeliveryList;
 
 
-  constructor(orderId: string, products: ProductQuantityRead[], dateGet: string, deliveryListReadDto: DeliveryList) {
-    this.orderId = orderId;
-    this.products = products;
-    this.dateGet = dateGet;
-    this.deliveryListReadDto = deliveryListReadDto;
-  }
+    constructor(orderId: string, productsWithQuantity: ProductQuantity[], products: Product[], dateGet: string, deliveryList: DeliveryList) {
+        this.orderId = orderId;
+        this.productsWithQuantity = productsWithQuantity;
+        this.products = products;
+        this.dateGet = dateGet;
+        this.deliveryList = deliveryList;
+    }
 }

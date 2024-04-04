@@ -22,7 +22,7 @@ export class AuthService {
   private LOCAL_STORAGE_ROLE_NAME = 'role';
   private LOCAL_STORAGE_CURRENT_ORDER_ID = 'currentOrderId';
   private LOCAL_STORAGE_USER_ADDRESS = 'address';
-  private apiUrl: string = 'http://localhost:8080/auth';
+  private apiUrl: string = 'http://localhost:8080/api/auth';
 
   constructor(private http: HttpClient,
               public dialog: MatDialog) {
@@ -79,15 +79,24 @@ export class AuthService {
   }
 
   loginCustomer(login: Login): void {
-    this.http.post<LoginInfo>(this.apiUrl + '/login',
+    this.http.post<LoginInfo[]>(this.apiUrl + '/login',
       JSON.stringify(login),
-      this.getHttpOptions()).subscribe((responce: HttpResponse<LoginInfo>) => {
-        if (responce.status == 200) {
-          localStorage.setItem(this.LOCAL_STORAGE_USER_ID_NAME, responce.body?.userId || '');
-          localStorage.setItem(this.LOCAL_STORAGE_TOKEN_NAME, responce.body?.token || '');
-          localStorage.setItem(this.LOCAL_STORAGE_ROLE_NAME, responce.body?.role || '');
-          localStorage.setItem(this.LOCAL_STORAGE_CURRENT_ORDER_ID, responce.body?.currentOrderId || '');
-          localStorage.setItem(this.LOCAL_STORAGE_USER_ADDRESS, responce.body?.address || '');
+      this.getHttpOptions()).subscribe((responce: HttpResponse<LoginInfo[]>) => {
+        if (responce.status == 202) {
+          console.log("ОТВЕТ" + responce.body);
+
+          const loginInfo = responce.body?.at(0);
+          console.log("ОТВЕТ" + loginInfo);
+          // @ts-ignore
+          localStorage.setItem(this.LOCAL_STORAGE_USER_ID_NAME, loginInfo.userId || '');
+          // @ts-ignore
+          localStorage.setItem(this.LOCAL_STORAGE_TOKEN_NAME, loginInfo.token || '');
+          // @ts-ignore
+          localStorage.setItem(this.LOCAL_STORAGE_ROLE_NAME, loginInfo.role || '');
+          // @ts-ignore
+          localStorage.setItem(this.LOCAL_STORAGE_CURRENT_ORDER_ID, loginInfo.currentOrderId || '');
+          // @ts-ignore
+          localStorage.setItem(this.LOCAL_STORAGE_USER_ADDRESS, loginInfo.address || '');
           this.subject.next({
             isAuthenticated: !!this.getToken(),
             isAdmin: this.getRole() === "ADMIN"

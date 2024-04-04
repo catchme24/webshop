@@ -1,6 +1,8 @@
 package com.example.service;
 
 import com.example.dto.CustomerDto;
+import com.example.dto.SuccesLoginDto;
+import com.example.entity.Customer;
 import com.example.security.JwtService;
 import com.example.service.response.ServiceResponse;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +33,7 @@ public class AuthService implements ResponseProducer {
     }
 
     @Transactional
-    public ServiceResponse<String> login(CustomerDto customerDto) {
+    public ServiceResponse<SuccesLoginDto> login(CustomerDto customerDto) {
         log.debug("Start authenticating user: {}", customerDto);
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -40,8 +42,17 @@ public class AuthService implements ResponseProducer {
                 )
         );
         UserDetails user = userDetailsService.loadUserByUsername(customerDto.getUsername());
+        CustomerDto currentUser = (CustomerDto) user;
         String jwtToken = jwtService.generateToken(user);
+        SuccesLoginDto succesLoginDto = SuccesLoginDto
+                        .builder()
+                        .currentOrderId(null)
+                        .address(currentUser.getCity())
+                        .role(currentUser.getRole().name())
+                        .userId(currentUser.getCustomerId().toString())
+                        .token(jwtToken)
+                        .build();
         log.debug("End authenticating user: {}", customerDto);
-        return goodResponse(HttpStatus.ACCEPTED, jwtToken);
+        return goodResponse(HttpStatus.ACCEPTED, succesLoginDto);
     }
 }

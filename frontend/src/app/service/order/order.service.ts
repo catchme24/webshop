@@ -4,6 +4,7 @@ import {AuthService} from "../auth/auth.service";
 import {BehaviorSubject, Observable, Subject} from "rxjs";
 import {ProductQuantityCreateEdit} from "../../model/class/ProductQuantityCreateEdit";
 import {DeliveryList} from "../../model/class/DeliveryList";
+import {Order} from "../../model/class/Order";
 
 
 @Injectable({
@@ -12,7 +13,7 @@ import {DeliveryList} from "../../model/class/DeliveryList";
 export class OrderService {
   //Даёт возможность подписаться на изменения этого сервиса
   subject = new Subject();
-  private apiUrl: string = 'http://localhost:8080/orders';
+  private apiUrl: string = 'http://localhost:8080/api/orders';
 
   constructor(private http: HttpClient,
               private authService: AuthService) {}
@@ -38,5 +39,10 @@ export class OrderService {
     return this.http.post(`http://localhost:8080/orders/${orderId}/form-order`,
       deliveryList,
       this.authService.getHttpOptionsWithAuth());
+  }
+
+  public getOrdersOfCurrentUser(): Observable<HttpResponse<Order[]>> {
+    return this.http.get<Order[]>(this.apiUrl,
+        this.authService.getHttpOptionsWithAuth());
   }
 }

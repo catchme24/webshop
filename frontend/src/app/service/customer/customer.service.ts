@@ -10,7 +10,7 @@ import {Order} from "../../model/class/Order";
 export class CustomerService {
   //Даёт возможность подписаться на изменения этого сервиса
   subject = new Subject();
-  private apiUrl: string = 'http://localhost:8080/customers';
+  private apiUrl: string = 'http://localhost:8080/api/customers';
 
   constructor(private http: HttpClient,
               private authService: AuthService){
