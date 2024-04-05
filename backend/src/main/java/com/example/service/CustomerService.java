@@ -3,6 +3,7 @@ package com.example.service;
 import com.example.dto.CustomerDto;
 import com.example.entity.Customer;
 import com.example.entity.Order;
+import com.example.entity.Role;
 import com.example.mapper.CustomerMapper;
 import com.example.repository.CustomerRepository;
 import com.example.service.response.ServiceMessage;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -43,6 +45,9 @@ public class CustomerService implements ResponseProducer {
                         ServiceMessage.USER_WITH_THIS_USERNAME_ALREADY_EXIST.name());
         }
         customerToBeAdded.setPassword(passwordEncoder.encode(customerToBeAdded.getPassword()));
+        if (Objects.isNull(customerToBeAdded.getRole())) {
+            customerToBeAdded.setRole(Role.USER);
+        }
         Customer customerToBeSaved = customerMapper.toEntity(customerToBeAdded);
         Order order = new Order();
         order.setCustomer(customerToBeSaved);

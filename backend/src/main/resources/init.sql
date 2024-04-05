@@ -54,11 +54,11 @@ INSERT INTO products(product_name, description, price, image_url)
 VALUES ('Карась',
         'Отличная рыба',
         100,
-        'https://e7.pngegg.com/pngimages/453/740/png-clipart-common-bream-carp-fish-rudd-perch-fisk-fauna-fish-products.png'),
+        'https://avatars.mds.yandex.net/i?id=1a7aecaa37e7a61bbb92bc499be5829a1d1b54fe-8217704-images-thumbs&n=13'),
        ('Лещ',
         'Вкусная рыба',
         200,
-        'https://img2.freepng.ru/20200214/vct/transparent-fish-fish-carp-cyprinidae-bony-fish-plesk-vysok-prelovca-sk5e6e2593ca0982.3561590415842768838276.jpg'),
+        'https://pofoto.club/uploads/posts/2022-07/1659036584_57-pofoto-club-p-karp-rechnaya-riba-69.jpg'),
        ('Подлещик',
         'Очень вкусная рыба',
         300,
@@ -70,11 +70,11 @@ VALUES ('Карась',
        ('Щука',
         'Хорошая рыбка',
         350,
-        'https://polotnos.cdnbro.com/posts/2527325-shchuka-klipart-26.jpg'),
+        'https://ic.pics.livejournal.com/iskosmosa/63238113/55577/55577_900.jpg'),
        ('Судак',
         'Классическая рыба',
         250,
-        'https://main-cdn.sbermegamarket.ru/hlr-system/415/778/470/817/105/3/100033206551b0.png');
+        'https://bober-med.ru/wp-content/uploads/2022/09/gos.jpg');
 
 INSERT INTO customers(first_name, last_name, phone_number, city,street, house, appartament, username, password, role)
 VALUES  ( 'Иван', 'Иванов', '555444', 'Москва', 'Баныкина', '12', '121', 'admin', '$2a$10$9Tx/f94Cp1npqP5R4fHBFuKOZzPSiR9Wslx4Yvi9H5QpRSEBMDSD2', 'ADMIN'),

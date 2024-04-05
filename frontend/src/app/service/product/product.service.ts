@@ -32,7 +32,7 @@ export class ProductService {
       this.authService.getHttpOptionsWithAuth());
   }
 
-  public delete(productId: string): Observable<HttpResponse<any>> {
+  public delete(productId: Number): Observable<HttpResponse<any>> {
     return this.http.delete(this.apiUrl + `/${productId}`,
       this.authService.getHttpOptionsWithAuth());
   }

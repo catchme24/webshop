@@ -25,7 +25,7 @@
                   <button *ngIf="authentication.isAuthenticated && !authentication.isAdmin" class="myButton" (click)="addProductToOrder(product)">КУПИТЬ</button>
                   <button *ngIf="!authentication.isAuthenticated" class="myButton" (click)="openDialogLogin()">КУПИТЬ</button>
                   <div class="text">Цена:{{product.price}}/кг</div>
-                  <button *ngIf="authentication.isAdmin" class="myButton" (click)="deleteProduct(product.productId)">УДАЛИТЬ</button>
+                  <button *ngIf="authentication.isAdmin" class="myButton" (click)="deleteProduct(product.productId || -1)">УДАЛИТЬ</button>
               </div>
             </div>
       </div>

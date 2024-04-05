@@ -11,7 +11,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 })
 export class AddProductComponent {
   addProductForm: AddProductForm = {
-    name: '',
+    productName: '',
     price: 0,
     description: '',
     imageUrl: ''
@@ -28,12 +28,9 @@ export class AddProductComponent {
 
   addProduct() {
     const product = new Product(
-      '',
-      this.addProductForm.name,
-      this.addProductForm.price,
-      this.addProductForm.description,
-      this.addProductForm.imageUrl
+        this.addProductForm
     );
+
     this.productService.create(product).subscribe(
       (responce) => {
         this.productService.subject.next();

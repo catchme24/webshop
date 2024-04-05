@@ -5,6 +5,7 @@ import {BehaviorSubject, Observable, Subject} from "rxjs";
 import {ProductQuantityCreateEdit} from "../../model/class/ProductQuantityCreateEdit";
 import {DeliveryList} from "../../model/class/DeliveryList";
 import {Order} from "../../model/class/Order";
+import {ProductQuantity} from "../../model/class/ProductQuantity";
 
 
 @Injectable({
@@ -18,13 +19,13 @@ export class OrderService {
   constructor(private http: HttpClient,
               private authService: AuthService) {}
 
-  public addProductInOrder(orderId: string, productQuantity: ProductQuantityCreateEdit): Observable<HttpResponse<any>> {
+  public addProductInOrder(orderId: string, productQuantity: ProductQuantity): Observable<HttpResponse<any>> {
     return this.http.post(this.apiUrl + `/${orderId}`,
         productQuantity,
         this.authService.getHttpOptionsWithAuth());
   }
 
-  public changeCountOfProduct(orderId: string, productQuantity: ProductQuantityCreateEdit): Observable<HttpResponse<any>> {
+  public changeCountOfProduct(orderId: string, productQuantity: ProductQuantity): Observable<HttpResponse<any>> {
     return this.http.put(this.apiUrl + `/${orderId}`,
         productQuantity,
         this.authService.getHttpOptionsWithAuth());
@@ -35,9 +36,9 @@ export class OrderService {
       this.authService.getHttpOptionsWithAuth());
   }
 
-  public addDeliveryListToOrder(orderId: string, deliveryList: DeliveryList): Observable<HttpResponse<any>> {
-    return this.http.post(`http://localhost:8080/orders/${orderId}/form-order`,
-      deliveryList,
+  public formCurrentOrder(paymentMethod: string): Observable<HttpResponse<any>> {
+    return this.http.post(this.apiUrl + "/form-current-order",
+      paymentMethod,
       this.authService.getHttpOptionsWithAuth());
   }
 

@@ -11,6 +11,8 @@ import {Authentication} from "../../model/type/Authentication";
 import {Subscription} from "rxjs";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {AddProductComponent} from "../../component/add-product/add-product.component";
+import {ProductQuantity} from "../../model/class/ProductQuantity";
+import {ProductTest} from "../../model/type/ProductTest";
 
 @Component({
   selector: 'app-products-page',
@@ -75,16 +77,16 @@ export class ProductsPageComponent implements OnInit {
   }
 
   openDialogAddProduct() {
-    console.log("HERE")
+    console.log("HEREE")
     this.dialog.open(AddProductComponent);
   }
 
   addProductToOrder(product: Product) {
-    const productQuantity = new ProductQuantityCreateEdit(product.productId, 1);
+    const productQuantity = new ProductQuantity(product.productId || 0, 1);
     console.log(this.authService.getCurrentOrderId());
     this.orderService.addProductInOrder(this.authService.getCurrentOrderId(), productQuantity)
       .subscribe((responce) => {
-          if(responce.status == 200) {
+          if(responce.status == 202) {
             this.matSnackBar.open("Вы успешно добавили продукт в корзину!", '', {
               duration: 2000,
               horizontalPosition: "right",
@@ -97,7 +99,7 @@ export class ProductsPageComponent implements OnInit {
       });
   }
 
-  deleteProduct(productId: string) {
+  deleteProduct(productId: number) {
     this.productService.delete(productId).subscribe(
       (responce) => {
       this.productService.subject.next();

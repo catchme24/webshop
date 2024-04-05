@@ -114,7 +114,7 @@ export class AuthService {
       JSON.stringify(customer),
       this.getHttpOptions()).subscribe((responce: HttpResponse<any>) => {
         if (responce.status == 201) {
-          alert("Вы успешно зарегистрировались! Поздравляем!!! РЫБНОГО СЧАСТЬЯ!");
+          alert("Вы успешно зарегистрировались!");
           this.dialog.closeAll();
         }
       },

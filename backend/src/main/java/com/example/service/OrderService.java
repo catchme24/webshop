@@ -117,7 +117,12 @@ public class OrderService implements ResponseProducer {
             return errorResponse(HttpStatus.BAD_REQUEST,
                     ServiceMessage.PRODUCT_IS_NOT_IN_ORDER.name());
         }
-        existingOrderProduct.setQuantity(dto.getQuantity());
+        if (dto.getQuantity() <= 0) {
+            existingOrder.get().getOrdersProducts().remove(dto.getProductId());
+            orderProductRepository.delete(existingOrderProduct);
+        } else {
+            existingOrderProduct.setQuantity(dto.getQuantity());
+        }
         OrderDto saved = orderMapper.toDto(orderRepository.save(existingOrder.get()));
         log.debug("End changing count of product with id={} to order with id={}", dto.getProductId(), orderId);
         return goodResponse(HttpStatus.ACCEPTED, saved);

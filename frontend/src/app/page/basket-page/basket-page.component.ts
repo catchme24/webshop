@@ -11,6 +11,8 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 import {MatSelectionListChange} from "@angular/material/list";
 import {Product} from "../../model/class/Product";
 import {ProductService} from "../../service/product/product.service";
+import {ProductQuantity} from "../../model/class/ProductQuantity";
+import {ProductTest} from "../../model/type/ProductTest";
 
 @Component({
   selector: 'app-basket-page',
@@ -41,7 +43,8 @@ export class BasketPageComponent implements OnInit {
   currentOrder!: Order | undefined;
   prevOrders!: Order[];
   productsId: number[] = [];
-  products!: Map<number, Product>;
+  products: Map<Number, Product> = new Map<Number, Product>();
+  productsss!: Map<Number, ProductTest>;
 
   constructor(
       private customerService: CustomerService,
@@ -93,8 +96,8 @@ export class BasketPageComponent implements OnInit {
         this.authService.setCurrentOrderId(this.currentOrder?.orderId || '');
         console.log("CURRENT ORDER " + JSON.stringify(this.currentOrder));
         const currentOrderProductsId: number[] = [];
-        this.currentOrder?.productsWithQuantity.forEach((value, index) => {
-          currentOrderProductsId.push(value.productId);
+        this.currentOrder?.productsWithQuantity?.forEach((value, index) => {
+          this.productsId.push(value.productId);
         });
         //Prev
         this.prevOrders = orders.filter(order => order.deliveryList != null);
@@ -102,30 +105,25 @@ export class BasketPageComponent implements OnInit {
         const prevOrdersProductsId: number[] = [];
         this.prevOrders.map((value, index) => {
           value.productsWithQuantity.map(value1 => {
-            prevOrdersProductsId.push(value1.productId);
+            this.productsId.push(value1.productId);
           })
         })
 
-        console.log(this.productsId);
-
-        //Запрос для продуктов на текующий заказ
-        this.productService.getAllByIds(currentOrderProductsId).subscribe((response: HttpResponse<Product[]>) => {
-          console.log("ОТВЕТ НА ПРОДУКТЫ CURRENT " + JSON.stringify(response.body));
+        //Запрос для всех продуктов
+        this.productService.getAllByIds(this.productsId).subscribe((response: HttpResponse<Product[]>) => {
+          console.log("ОТВЕТ НА ПРОДУКТЫ  " + JSON.stringify(response.body));
           const products = response.body;
+
           products?.forEach((value, index) => {
-            this.currentOrder?.products.push(value);
+            this.products.set(value.productId || 0, value);
           });
 
-        },(error: any) => {
-          console.log(error);
-        });
+          this.totalMass = 0;
+          this.totalCost = 0;
 
-        //Запрос для продуктов на предыдущие заказ
-        this.productService.getAllByIds(prevOrdersProductsId).subscribe((response: HttpResponse<Product[]>) => {
-          console.log("ОТВЕТ НА ПРОДУКТЫ PREV " + JSON.stringify(response.body));
-          const products = response.body;
-          products?.forEach((value, index) => {
-            this.prevOrders?.push(value);
+          this.currentOrder?.productsWithQuantity?.forEach((value) => {
+            this.totalCost = this.totalCost + (this.products.get(value.productId)?.price || 0) * value.quantity;
+            this.totalMass = this.totalMass + value.quantity;
           });
 
         },(error: any) => {
@@ -137,17 +135,13 @@ export class BasketPageComponent implements OnInit {
     });
   }
 
-  changeCountOfProduct(orderId: string, productId: string, quantity: number) {
-    if (quantity != 0) {
-      this.orderService.changeCountOfProduct(orderId, {productId, quantity})
-        .subscribe((responce) => {
-          this.orderService.subject.next({});
-        }, (error: any) => {
-          console.log(error);
-        });
-    } else {
-      this.deleteProductFromOrder(orderId, productId);
-    }
+  changeCountOfProduct(orderId: string, productId: number, quantity: number) {
+    this.orderService.changeCountOfProduct(orderId, new ProductQuantity(productId, quantity))
+      .subscribe((responce) => {
+        this.orderService.subject.next({});
+      }, (error: any) => {
+        console.log(error);
+      });
   }
 
   deleteProductFromOrder(orderId: string, productId: string) {
@@ -160,13 +154,7 @@ export class BasketPageComponent implements OnInit {
   }
 
   formOrder() {
-    const delivertList = new DeliveryList(
-      '',
-      this.payMethods[0].isActive == true ? this.payMethods[0].name : this.payMethods[1].name,
-      '',
-      ''
-    );
-    this.orderService.addDeliveryListToOrder(this.currentOrder?.orderId || '', delivertList)
+    this.orderService.formCurrentOrder(this.payMethods[0].isActive == true ? this.payMethods[0].name : this.payMethods[1].name)
       .subscribe((responce) => {
         this.orderService.subject.next({});
       },
