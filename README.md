@@ -27,7 +27,7 @@ mvn install
 To start the application use:
 
 ```
-java -jar backend/target/study-backend-0.0.1-SNAPSHOT.jar
+java -jar backend/target/backend-0.0.1-SNAPSHOT.jar
 ```
 
 
